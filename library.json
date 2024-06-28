@@ -1,0 +1,17 @@
+{
+    "name": "witmotion_imu",
+    "version": "0.0.1",
+    "description": "driver for imu released by witmotion",
+    "keywords": "imu, i2c",
+    "authors":
+    [
+      {
+        "name": "Hirotaka Hosogaya",
+        "email": "hosogaya.hirotaka@gmail.com",
+        "maintainer": true
+      }
+    ],
+    "license": "MIT",
+    "frameworks": "arduino",
+    "platforms": "teensy"
+}
