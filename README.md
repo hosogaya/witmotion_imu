@@ -12,5 +12,5 @@ void setup()
 }
 ```
 
-# Refrence 
+# Reference 
 * [wt901 datasheet](https://images-na.ssl-images-amazon.com/images/I/B11fVGszLsS.pdf)
