@@ -1,5 +1,5 @@
 # witmotion imu
-Imu driver for IIC communication with wt901 provided by witmotion. 
+Imu driver for IIC communication with jy901 and wt901 provided by witmotion. 
 
 # Note
 Please begin and set clock hz of the wire object in setup(). 
