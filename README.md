@@ -1,6 +1,37 @@
 # witmotion imu
 Imu driver for IIC communication with jy901 and wt901 provided by witmotion. 
 
+# Example Code
+```cpp
+#include <Arduino.h>
+#include <witmotion_imu/i2c_interface.h>
+
+#define WITMOTION_WIRE Wire2
+
+witmotion_imu::I2cInterface imu_interface(&WITMOTION_WIRE, 0x50);
+
+void setup() {
+  Serial.begin(9600);
+  while (!Serial);
+
+  // Please begin and set clock hz of the wire object in setup(). 
+  WITMOTION_WIRE.begin();
+  WITMOTION_WIRE.setClock(400e3);
+  WITMOTION_WIRE.endTransmission();
+}
+
+void loop() {
+  // roll, pitch, yaw angles
+  auto angle = imu_interface.getAngle();
+  for (const auto& a : angle)
+  {
+    Serial.print(a); Serial.print(", ");
+  }
+  Serial.println();
+  delay(100);
+}
+```
+
 # Note
 Please begin and set clock hz of the wire object in setup(). 
 
