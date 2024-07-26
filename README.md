@@ -20,14 +20,21 @@ void setup() {
   WITMOTION_WIRE.endTransmission();
 }
 
+std::array<float, 3> angle;
 void loop() {
   // roll, pitch, yaw angles
-  auto angle = imu_interface.getAngle();
-  for (const auto& a : angle)
+  if (!imu_interface.getAngle(angle))
   {
-    Serial.print(a); Serial.print(", ");
+    Serial.println("faild to read angle");
   }
-  Serial.println();
+  else 
+  {
+    for (const auto& a : angle)
+    {
+      Serial.print(a); Serial.print(", ");
+    }
+    Serial.println();
+  }
   delay(100);
 }
 ```
