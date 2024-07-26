@@ -15,42 +15,42 @@ public:
     ~I2cInterface();
     
     // read
-    uint16_t getTime(const std::string& str);
-    double getAccX();
-    double getAccY();
-    double getAccZ();
-    std::array<double, 3> getAcc();
+    bool getTime(const std::string& str, uint16_t& time);
+    bool getAccX(float& value);
+    bool getAccY(float& value);
+    bool getAccZ(float& value);
+    bool getAcc(std::array<float, 3>& values);
 
-    double getGyroX();
-    double getGyroY();
-    double getGyroZ();
-    std::array<double, 3> getGyro();
+    bool getGyroX(float& value);
+    bool getGyroY(float& value);
+    bool getGyroZ(float& value);
+    bool getGyro(std::array<float, 3>& values);
 
-    double getMagX();
-    double getMagY();
-    double getMagZ();
-    std::array<double, 3> getMag();
+    bool getMagX(float& value);
+    bool getMagY(float& value);
+    bool getMagZ(float& value);
+    bool getMag(std::array<float, 3>& values);
 
-    double getRoll();
-    double getPitch();
-    double getYaw();
-    std::array<double, 3> getAngle();
+    bool getRoll(float& value);
+    bool getPitch(float& value);
+    bool getYaw(float& value);
+    bool getAngle(std::array<float, 3>& values);
 
-    double getTemperature();
-    int32_t getPressure();
-    int32_t getAltitude();
-    int16_t getD0Status();
-    int16_t getD1Status();
-    int16_t getD2Status();
-    int16_t getD3Status();
-    int32_t getLongitude();
-    int32_t getLatitude();
-    double getGPSH();
-    double getGPSY();
-    double getGPSV();
+    bool getTemperature(float& value);
+    bool getPressure(int32_t& value);
+    bool getAltitude(int32_t& value);
+    bool getD0Status(int16_t& value);
+    bool getD1Status(int16_t& value);
+    bool getD2Status(int16_t& value);
+    bool getD3Status(int16_t& value);
+    bool getLongitude(int32_t& value);
+    bool getLatitude(int32_t& value);
+    bool getGPSH(float& value);
+    bool getGPSY(float& value);
+    bool getGPSV(float& value);
 
     // w, x, y, z
-    std::array<double, 4> getQuaternion();
+    bool getQuaternion(std::array<float, 4>& value);
 
     // write
     void saveConfig();
@@ -144,11 +144,11 @@ private:
     } quat_;
 
 
-    static constexpr double kAccConversion_ = 1.0/(32768.0/16.0);
-    static constexpr double kGyroConversion_ = 1.0/(32768.0/2000.0)*(M_PI/180.0);
-    static constexpr double kMagConversion_ = 1.0/(32768.0/180.0);
-    static constexpr double kAngleConversion_ = 1.0/(32768.0/180.0)*(M_PI/180.0);
-    static constexpr double kQuatConversion_ = 1.0/(32768.0);
+    static constexpr float kAccConversion_ = 1.0/(32768.0/16.0);
+    static constexpr float kGyroConversion_ = 1.0/(32768.0/2000.0)*(M_PI/180.0);
+    static constexpr float kMagConversion_ = 1.0/(32768.0/180.0);
+    static constexpr float kAngleConversion_ = 1.0/(32768.0/180.0)*(M_PI/180.0);
+    static constexpr float kQuatConversion_ = 1.0/(32768.0);
 };
 
 }

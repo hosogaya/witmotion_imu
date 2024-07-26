@@ -9,272 +9,281 @@ I2cInterface::I2cInterface(TwoWire* wire, uint8_t address)
 I2cInterface::~I2cInterface() {}
 
 
-uint16_t I2cInterface::getTime(const std::string& str)
+bool I2cInterface::getTime(const std::string& str, uint16_t& time)
 {
-    readRegisters(REG_YYMM, 8, (uint8_t*)(&time_));
+    if (!readRegisters(REG_YYMM, 8, (uint8_t*)(&time_))) return false;
 
-    if (str == "year") return time_.year_;
-    if (str == "month") return time_.month_;
-    if (str == "day") return time_.day_;
-    if (str == "hour") return time_.hour_;
-    if (str == "minute") return time_.minute_;
-    if (str == "second") return time_.second_;
-    if (str == "milisecond") return time_.milisecond_;
+    if (str == "year") time = time_.year_;
+    if (str == "month") time = time_.month_;
+    if (str == "day") time = time_.day_;
+    if (str == "hour") time = time_.hour_;
+    if (str == "minute") time = time_.minute_;
+    if (str == "second") time = time_.second_;
+    if (str == "milisecond") time = time_.milisecond_;
 
-    return 0;
+    return true;
 }
 
 /*************************
  *  Acceleration [g]
  **************************/
 
-double I2cInterface::getAccX()
+bool I2cInterface::getAccX(float& value)
 {
-    readRegisters(REG_AX, 2, (uint8_t*)(&acc_.x_));
+    if (!readRegisters(REG_AX, 2, (uint8_t*)(&acc_.x_))) return false;
+    value = acc_.x_*kAccConversion_;
 
-    return acc_.x_*kAccConversion_;
+    return true;
 }
 
-double I2cInterface::getAccY()
+bool I2cInterface::getAccY(float& value)
 {
-    readRegisters(REG_AY, 2, (uint8_t*)(&acc_.y_));
-
-    return acc_.y_*kAccConversion_;
+    if (!readRegisters(REG_AY, 2, (uint8_t*)(&acc_.y_))) return false;
+    value = acc_.y_*kAccConversion_;
+    return true;
 }
 
-double I2cInterface::getAccZ()
+bool I2cInterface::getAccZ(float& value)
 {
-    readRegisters(REG_AZ, 2, (uint8_t*)(&acc_.z_));
-
-    return acc_.z_*kAccConversion_;
-}
-
-std::array<double, 3> I2cInterface::getAcc()
-{
-    readRegisters(REG_AX, 6, (uint8_t*)(&acc_));
+    if (!readRegisters(REG_AZ, 2, (uint8_t*)(&acc_.z_))) return false;
+    value = acc_.z_*kAccConversion_;
     
-    std::array<double, 3> acc{
-        acc_.x_*kAccConversion_, 
-        acc_.y_*kAccConversion_, 
-        acc_.z_*kAccConversion_ 
-    };
+    return true;
+}
 
-    return acc;
+bool I2cInterface::getAcc(std::array<float, 3>& values)
+{
+    if (!readRegisters(REG_AX, 6, (uint8_t*)(&acc_))) return false;    
+    
+    values[0] = acc_.x_*kAccConversion_; 
+    values[1] = acc_.y_*kAccConversion_; 
+    values[2] = acc_.z_*kAccConversion_;
+
+    return true;
 }
 
 
 /*************************
  *  Gyro [rad/s]
  **************************/
-double I2cInterface::getGyroX()
+bool I2cInterface::getGyroX(float& value)
 {
-    readRegisters(REG_GX, 2, (uint8_t*)(&gyro_.x_));
+    if (!readRegisters(REG_GX, 2, (uint8_t*)(&gyro_.x_))) return false;
+    value = gyro_.x_*kGyroConversion_;
 
-    return gyro_.x_*kGyroConversion_;
+    return true;
 }
 
-double I2cInterface::getGyroY()
+bool I2cInterface::getGyroY(float& value)
 {
-    readRegisters(REG_GY, 2, (uint8_t*)(&gyro_.y_));
+    if (!readRegisters(REG_GY, 2, (uint8_t*)(&gyro_.y_))) return false;
+    value = gyro_.y_*kGyroConversion_;
 
-    return gyro_.y_*kGyroConversion_;
+    return true;
 }
 
-double I2cInterface::getGyroZ()
+bool I2cInterface::getGyroZ(float& value)
 {
-    readRegisters(REG_GZ, 2, (uint8_t*)(&gyro_.z_));
+    if (!readRegisters(REG_GZ, 2, (uint8_t*)(&gyro_.z_))) return false;
+    value = gyro_.z_*kGyroConversion_;
 
-    return gyro_.z_*kGyroConversion_;
+    return true;
 }
 
-std::array<double, 3> I2cInterface::getGyro()
+bool I2cInterface::getGyro(std::array<float, 3>& values)
 {
-    readRegisters(REG_GX, 6, (uint8_t*)(&gyro_));
+    if (!readRegisters(REG_GX, 6, (uint8_t*)(&gyro_))) return false;
     
-    std::array<double, 3> gyro{
-        gyro_.x_*kGyroConversion_, 
-        gyro_.y_*kGyroConversion_, 
-        gyro_.z_*kGyroConversion_ 
-    };
+    values[0] = gyro_.x_*kGyroConversion_; 
+    values[1] = gyro_.y_*kGyroConversion_; 
+    values[2] = gyro_.z_*kGyroConversion_;
 
-    return gyro;
+    return true;
 }
 
 /*************************
  *  magnitude
  **************************/
-double I2cInterface::getMagX()
+bool I2cInterface::getMagX(float& value)
 {
-    readRegisters(REG_HX, 2, (uint8_t*)(&mag_.x_));
+    if (!readRegisters(REG_HX, 2, (uint8_t*)(&mag_.x_))) return false;
+    value = mag_.x_*kMagConversion_;
 
-    return mag_.x_*kMagConversion_;
+    return true;
 }
 
-double I2cInterface::getMagY()
+bool I2cInterface::getMagY(float& value)
 {
-    readRegisters(REG_HY, 2, (uint8_t*)(&mag_.y_));
+    if (!readRegisters(REG_HY, 2, (uint8_t*)(&mag_.y_))) return false;
+    value = mag_.y_*kMagConversion_;
 
-    return mag_.y_*kMagConversion_;
+    return true;
 }
 
-double I2cInterface::getMagZ()
+bool I2cInterface::getMagZ(float& value)
 {
-    readRegisters(REG_HZ, 2, (uint8_t*)(&mag_.z_));
+    if (!readRegisters(REG_HZ, 2, (uint8_t*)(&mag_.z_))) return false;
+    value = mag_.z_*kMagConversion_;
 
-    return mag_.z_*kMagConversion_;
+    return true;
 }
 
-std::array<double, 3> I2cInterface::getMag()
+bool I2cInterface::getMag(std::array<float, 3>& values)
 {
-    readRegisters(REG_HX, 6, (uint8_t*)(&mag_));
+    if (!readRegisters(REG_HX, 6, (uint8_t*)(&mag_))) return false;
     
-    std::array<double, 3> mag{
-        mag_.x_*kMagConversion_, 
-        mag_.y_*kMagConversion_, 
-        mag_.z_*kMagConversion_ 
-    };
+    values[0] = mag_.x_*kMagConversion_; 
+    values[1] = mag_.y_*kMagConversion_; 
+    values[2] = mag_.z_*kMagConversion_;
 
-    return mag;
+    return true;
 }
 
 /*************************
  *  Euler [rad]
  **************************/
-double I2cInterface::getRoll()
+bool I2cInterface::getRoll(float& value)
 {
-    readRegisters(REG_Roll, 2, (uint8_t*)(&angle_.roll_));
-
-    return angle_.roll_*kAngleConversion_;;
+    if (!readRegisters(REG_Roll, 2, (uint8_t*)(&angle_.roll_))) return false;
+    value = angle_.roll_*kAngleConversion_;;
 }
 
-double I2cInterface::getPitch()
+bool I2cInterface::getPitch(float& value)
 {
-    readRegisters(REG_Pitch, 2, (uint8_t*)(&angle_.pitch_));
+    if (!readRegisters(REG_Pitch, 2, (uint8_t*)(&angle_.pitch_))) return false;
+    value = angle_.pitch_*kAngleConversion_;
 
-    return angle_.pitch_*kAngleConversion_;
+    return true;
 }
 
-double I2cInterface::getYaw()
+bool I2cInterface::getYaw(float& value)
 {
-    readRegisters(REG_Yaw, 2, (uint8_t*)(&angle_.yaw_));
+    if (!readRegisters(REG_Yaw, 2, (uint8_t*)(&angle_.yaw_))) return false;
+    value = angle_.yaw_*kAngleConversion_;
 
-    return angle_.yaw_*kAngleConversion_;
+    return true;
 }
 
-std::array<double, 3> I2cInterface::getAngle()
+bool I2cInterface::getAngle(std::array<float, 3>& values)
 {
-    readRegisters(REG_Roll, 6, (uint8_t*)(&angle_));
+    if (!readRegisters(REG_Roll, 6, (uint8_t*)(&angle_))) return false;
     
-    std::array<double, 3> angle{
-        angle_.roll_*kAngleConversion_, 
-        angle_.pitch_*kAngleConversion_, 
-        angle_.yaw_*kAngleConversion_ 
-    };
+    values[0] = angle_.roll_*kAngleConversion_;
+    values[1] = angle_.pitch_*kAngleConversion_; 
+    values[2] = angle_.yaw_*kAngleConversion_;
 
-    return angle;
+    return true;
 }
 
-double I2cInterface::getTemperature()
+bool I2cInterface::getTemperature(float& value)
 {
-    readRegisters(REG_TEMP, 2, (uint8_t*)(&temperature_));
+    if (!readRegisters(REG_TEMP, 2, (uint8_t*)(&temperature_))) return false;
+    value = temperature_*0.01; // C^o
 
-    return temperature_*0.01; // C^o
+    return true;
 }
 
-int32_t I2cInterface::getPressure()
+bool I2cInterface::getPressure(int32_t& value)
 {
-    readRegisters(REG_PressureL, 4, (uint8_t*)(&pressure_));
-    pressure_ = reverse(pressure_); // reverse
-    return pressure_; // Pa
+    if (!readRegisters(REG_PressureL, 4, (uint8_t*)(&pressure_))) return false;
+    value = reverse(pressure_); // Pa
+    
+    return true;
 }
 
-int32_t I2cInterface::getAltitude()
+bool I2cInterface::getAltitude(int32_t& value)
 {
-    readRegisters(REG_HeightL, 4, (uint8_t*)(&altitude_));
-    altitude_ = reverse(altitude_);
+    if (!readRegisters(REG_HeightL, 4, (uint8_t*)(&altitude_))) return false;
+    value = reverse(altitude_); // cm
 
-    return altitude_; // cm
+    return true;
 }
 
 /************************************
  *  D status
  ************************************/
 
-int16_t I2cInterface::getD0Status()
+bool I2cInterface::getD0Status(int16_t& value)
 {
-    readRegisters(REG_D0Status, 2, (uint8_t*)(&d_status_.d0_));
+    if (!readRegisters(REG_D0Status, 2, (uint8_t*)(&d_status_.d0_))) return false;
+    value = d_status_.d0_;
 
-    return d_status_.d0_;
+    return true;
 }
 
-int16_t I2cInterface::getD1Status()
+bool I2cInterface::getD1Status(int16_t& value)
 {
-    readRegisters(REG_D1Status, 2, (uint8_t*)(&d_status_.d1_));
+    if (!readRegisters(REG_D1Status, 2, (uint8_t*)(&d_status_.d1_))) return false;
+    value = d_status_.d1_;
 
-    return d_status_.d1_;
+    return true;
 }
 
-int16_t I2cInterface::getD2Status()
+bool I2cInterface::getD2Status(int16_t& value)
 {
-    readRegisters(REG_D2Status, 2, (uint8_t*)(&d_status_.d2_));
-
-    return d_status_.d2_;
+    if (!readRegisters(REG_D2Status, 2, (uint8_t*)(&d_status_.d2_))) return false;
+    value = d_status_.d2_;
+    
+    return true;
 }
 
-int16_t I2cInterface::getD3Status()
+bool I2cInterface::getD3Status(int16_t& value)
 {
-    readRegisters(REG_D3Status, 2, (uint8_t*)(&d_status_.d3_));
-
-    return d_status_.d3_;
+    if (!readRegisters(REG_D3Status, 2, (uint8_t*)(&d_status_.d3_))) return false;
+    value = d_status_.d3_;
+    
+    return true;
 }
 
-int32_t I2cInterface::getLongitude()
+bool I2cInterface::getLongitude(int32_t& value)
 {
-    readRegisters(REG_LonL, 4, (uint8_t*)(&longitude_));
-    longitude_ = reverse(longitude_);
+    if (!readRegisters(REG_LonL, 4, (uint8_t*)(&longitude_))) return false;
+    value = reverse(longitude_);
 
-    return longitude_; 
+    return true; 
 }
 
-int32_t I2cInterface::getLatitude()
+bool I2cInterface::getLatitude(int32_t& value)
 {
-    readRegisters(REG_LatL, 4, (uint8_t*)(&latitude_));
-    latitude_ = reverse(latitude_);
+    if (!readRegisters(REG_LatL, 4, (uint8_t*)(&latitude_))) return false;
+    value = reverse(latitude_);
 
-    return latitude_; 
+    return true; 
 }
 
-double I2cInterface::getGPSH()
+bool I2cInterface::getGPSH(float& value)
 {
-    readRegisters(REG_GPSHeight, 2, (uint8_t*)(&gps_.height_));
-    return gps_.height_*0.1; // m
+    if (!readRegisters(REG_GPSHeight, 2, (uint8_t*)(&gps_.height_))) return false;
+    value = gps_.height_*0.1; // m
+
+    return true;
 }
 
-double I2cInterface::getGPSY()
+bool I2cInterface::getGPSY(float& value)
 {
-    readRegisters(REG_GPSYAW, 2, (uint8_t*)(&gps_.yaw_));
+    if (!readRegisters(REG_GPSYAW, 2, (uint8_t*)(&gps_.yaw_))) return false;
+    value = gps_.yaw_*0.1; // deg
 
-    return gps_.yaw_*0.1; // deg
+    return true;
 }
 
-double I2cInterface::getGPSV()
+bool I2cInterface::getGPSV(float& value)
 {
-    readRegisters(REG_GPSVL, 4, (uint8_t*)(&gps_.vel_));
+    if (!readRegisters(REG_GPSVL, 4, (uint8_t*)(&gps_.vel_))) return false;
     gps_.vel_ = reverse(gps_.vel_);
-    return gps_.vel_*0.001; // km/h
+    value = gps_.vel_*0.001; // km/h
+
+    return true;
 }
 
-std::array<double, 4> I2cInterface::getQuaternion()
+bool I2cInterface::getQuaternion(std::array<float, 4>& values)
 {
-    readRegisters(REG_Q0, 8, (uint8_t*)(&quat_));
-    std::array<double, 4> quat{
-        quat_.w_*kQuatConversion_,
-        quat_.x_*kQuatConversion_,
-        quat_.y_*kQuatConversion_,
-        quat_.z_*kQuatConversion_
-    };
-
-    return quat;
+    if (!readRegisters(REG_Q0, 8, (uint8_t*)(&quat_))) return false;
+    values[0] = quat_.w_*kQuatConversion_;
+    values[1] = quat_.x_*kQuatConversion_;
+    values[2] = quat_.y_*kQuatConversion_;
+    values[3] = quat_.z_*kQuatConversion_;
+    return true;
 }
 
 
